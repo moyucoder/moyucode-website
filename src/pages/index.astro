@@ -3,7 +3,16 @@ import { Image } from "astro:assets"
 import { getCollection, type CollectionEntry } from "astro:content"
 import HomeLayout from "../layouts/HomeLayout.astro"
 import { resolveFeedVisual, type FeedColumn, type FeedVisual } from "../lib/feedCover.ts"
-import { formatDate, hrefForDocId, isoDate, mtimeMs, weeklyIssueNum } from "../lib/homeLists.ts"
+import {
+  formatDate,
+  hrefForDocId,
+  isoDate,
+  mtimeMs,
+  publishedOrMtimeMs,
+  weeklyIssueNum,
+} from "../lib/homeLists.ts"
+
+const BLOG_HOME_FEED_MAX = 20
 
 const allDocs = await getCollection("docs", (e) => e.data.draft !== true)
 
@@ -16,9 +25,14 @@ type CardItem = {
   feed: FeedVisual
 }
 
-function toCardItems(entries: CollectionEntry<"docs">[], column: FeedColumn): CardItem[] {
-  return entries.slice(0, 12).map((e) => {
-    const t = mtimeMs(e.id)
+function toCardItems(
+  entries: CollectionEntry<"docs">[],
+  column: FeedColumn,
+  timeMs: (e: CollectionEntry<"docs">) => number = (e) => mtimeMs(e.id),
+  max = 12,
+): CardItem[] {
+  return entries.slice(0, max).map((e) => {
+    const t = timeMs(e)
     return {
       href: hrefForDocId(e.id),
       title: e.data.title,
@@ -32,11 +46,16 @@ function toCardItems(entries: CollectionEntry<"docs">[], column: FeedColumn): Ca
 
 const weeklyRaw = allDocs.filter((e) => e.id.startsWith("weekly/") && /^weekly\/weekly-\d+$/u.test(e.id))
 weeklyRaw.sort((a, b) => weeklyIssueNum(b.id) - weeklyIssueNum(a.id))
-const weeklyList = toCardItems(weeklyRaw, "weekly")
+const weeklyList = toCardItems(weeklyRaw, "weekly", publishedOrMtimeMs)
 
-const blogRaw = allDocs.filter((e) => e.id.startsWith("blog/") && e.id !== "blog/index")
-blogRaw.sort((a, b) => mtimeMs(b.id) - mtimeMs(a.id))
-const blogList = toCardItems(blogRaw, "blog")
+const blogCandidates = allDocs.filter((e) => e.id.startsWith("blog/") && e.id !== "blog/index")
+const byPublishedDesc = (a: CollectionEntry<"docs">, b: CollectionEntry<"docs">) =>
+  publishedOrMtimeMs(b) - publishedOrMtimeMs(a)
+const blogFeatured = blogCandidates.filter((e) => e.data.homeFeed === true).sort(byPublishedDesc)
+const blogRest = blogCandidates.filter((e) => e.data.homeFeed !== true).sort(byPublishedDesc)
+/** 先 homeFeed，再按 publishedAt（无则 mtime）倒序补足至 20 条 */
+const blogRaw = [...blogFeatured, ...blogRest].slice(0, BLOG_HOME_FEED_MAX)
+const blogList = toCardItems(blogRaw, "blog", publishedOrMtimeMs, BLOG_HOME_FEED_MAX)
 
 const base = import.meta.env.BASE_URL
 const feedColumns = [

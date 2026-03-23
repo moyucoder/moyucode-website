@@ -1,8 +1,35 @@
 diff --git a/node_modules/@astrojs/starlight/utils/navigation.ts b/node_modules/@astrojs/starlight/utils/navigation.ts
-index 2870d61..f9e2da9 100644
+index 2870d61..b135a3c 100644
 --- a/node_modules/@astrojs/starlight/utils/navigation.ts
 +++ b/node_modules/@astrojs/starlight/utils/navigation.ts
-@@ -356,14 +356,57 @@ function sidebarFromDir(
+@@ -300,6 +300,17 @@ function sortDirEntries(dir: [string, Dir | Route][]): [string, Dir | Route][] {
+ 	});
+ }
+ 
++/** moyu: 子目录索引页 frontmatter `sidebarGroupLabel` 覆盖侧栏分组标题（目录名用英文，展示中文） */
++function sidebarGroupLabelFromDir(dir: Dir, dirName: string): string {
++	const indexEntry = dir['index'];
++	if (indexEntry && !isDir(indexEntry)) {
++		const raw = indexEntry.entry.data as { sidebarGroupLabel?: string };
++		const gl = raw.sidebarGroupLabel;
++		if (typeof gl === 'string' && gl.trim() !== '') return gl.trim();
++	}
++	return dirName;
++}
++
+ /** Create a group entry for a given content collection directory. */
+ function groupFromDir(
+ 	dir: Dir,
+@@ -314,7 +325,7 @@ function groupFromDir(
+ 	);
+ 	return {
+ 		type: 'group',
+-		label: dirName,
++		label: sidebarGroupLabelFromDir(dir, dirName),
+ 		entries,
+ 		collapsed,
+ 		badge: undefined,
+@@ -356,14 +367,57 @@ function sidebarFromDir(
   *
   * @see getSidebarFromIntermediateSidebar
   */

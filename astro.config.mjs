@@ -70,15 +70,19 @@ export default defineConfig({
         replacesTitle: true,
       },
       /**
-       * 用 autogenerate 按当前内容集合生成侧栏，删文后不会残留 slug，避免
-       * `The slug "blog/..." specified in the Starlight sidebar config does not exist`。
-       * 开发时配合 patches 中「DEV 不缓存侧栏」与内容同步，本地增删 md 不报错。
+       * 博客侧栏：博客首页与两个栏目均为顶层一级（不再包在「文档」分组下）。
        */
       sidebar: [
+        { slug: "blog", label: "摸鱼编程博客" },
         {
-          label: "文档",
+          label: "从 0 开始学 Agent",
           collapsed: false,
-          autogenerate: { directory: "blog" },
+          autogenerate: { directory: "blog/from-zero-agent" },
+        },
+        {
+          label: "云原生",
+          collapsed: true,
+          autogenerate: { directory: "blog/cloud-native" },
         },
       ],
       sidebarByLocale: {

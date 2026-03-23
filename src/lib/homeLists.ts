@@ -15,6 +15,24 @@ export function mtimeMs(id: string): number {
   }
 }
 
+type WithPublished = { id: string; data: { publishedAt?: Date | string } }
+
+/** 解析 frontmatter `publishedAt`（Date 或 YAML 日期字符串） */
+function publishedAtMs(entry: WithPublished): number | null {
+  const p = entry.data.publishedAt
+  if (p instanceof Date && !Number.isNaN(p.getTime())) return p.getTime()
+  if (typeof p === "string" && p.trim()) {
+    const t = new Date(p).getTime()
+    if (!Number.isNaN(t)) return t
+  }
+  return null
+}
+
+/** 首页展示/排序时间：优先 `publishedAt`，否则回退文件 mtime */
+export function publishedOrMtimeMs(entry: WithPublished): number {
+  return publishedAtMs(entry) ?? mtimeMs(entry.id)
+}
+
 /** 从 `weekly/weekly-12` 解析期号，用于首页周刊排序 */
 export function weeklyIssueNum(id: string): number {
   const m = id.match(/weekly-(\d+)$/)

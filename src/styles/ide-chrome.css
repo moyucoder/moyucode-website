@@ -93,14 +93,43 @@ html {
   font-family: var(--ide-font-ui);
 }
 
+/* 云原生等页：关注博主链接，桌面每行 3 个 */
+.sl-markdown-content .blogger-follow-grid {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem 1rem;
+}
+
+.sl-markdown-content .blogger-follow-grid a {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 50rem) {
+  .sl-markdown-content .blogger-follow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 30rem) {
+  .sl-markdown-content .blogger-follow-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* 正文插图：最大宽度为版心 60%，居中（博客/周刊 Markdown、MDX） */
 .sl-markdown-content picture {
   display: block;
-  max-width: 60%;
+  max-width: 80%;
   margin-inline: auto;
 }
 .sl-markdown-content img {
-  max-width: 60%;
+  max-width: 80%;
   width: auto;
   height: auto;
   display: block;
@@ -109,6 +138,82 @@ html {
 .sl-markdown-content picture img {
   max-width: 100%;
   width: 100%;
+}
+
+/* 博客 / 周刊：正文图可点击放大 */
+.sl-markdown-content img.md-content-img--zoomable {
+  cursor: zoom-in;
+}
+
+.md-img-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: min(2rem, 4vw);
+  box-sizing: border-box;
+}
+
+.md-img-lightbox.is-open {
+  display: flex;
+}
+
+.md-img-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border: none;
+  padding: 0;
+  background: color-mix(in oklab, black 86%, transparent);
+  cursor: pointer;
+}
+
+.md-img-lightbox__img {
+  position: relative;
+  z-index: 1;
+  max-width: min(96vw, 100%);
+  max-height: min(90vh, 100%);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0;
+  cursor: default;
+  box-shadow: 0 4px 24px color-mix(in oklab, black 45%, transparent);
+}
+
+.md-img-lightbox__close {
+  position: absolute;
+  z-index: 2;
+  top: 0.65rem;
+  right: 0.65rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ide-border, #3e3e42);
+  border-radius: 0;
+  background: color-mix(in oklab, var(--sl-color-bg) 92%, black);
+  color: var(--sl-color-gray-2, #ccc);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+html[data-theme="light"] .md-img-lightbox__close {
+  background: #f3f3f3;
+  color: var(--moyu-ink-muted, #333);
+  border-color: var(--ide-border, #e5e5e5);
+}
+
+.md-img-lightbox__close:hover {
+  color: var(--sl-color-white, #fff);
+  border-color: var(--sl-color-accent, #1a9fb7);
+}
+
+html[data-theme="light"] .md-img-lightbox__close:hover {
+  color: var(--moyu-ink, #141414);
 }
 
 /* 全站浅色/暗色底与边框变量（404 等页面可复用） */
@@ -184,17 +289,21 @@ html[data-theme="light"] .sl-markdown-content :where(strong) {
   color: var(--moyu-ink);
 }
 
-/* 周刊：## 被 autolink 包成 <a> 时不要链接高亮/下划线（canonical 含 /weekly/） */
-html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content h2 a {
+/* 周刊 / 博客：标题被 rehype-autolink-headings 包成 <a> 时与正文标题一致，无链接色/下划线 */
+html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a,
+html:has(link[rel="canonical"][href*="/blog/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a {
   color: inherit;
   text-decoration: none;
   font-weight: inherit;
   background: none;
   box-shadow: none;
 }
-html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content h2 a:hover,
-html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content h2 a:focus,
-html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content h2 a:focus-visible {
+html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a:hover,
+html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a:focus,
+html:has(link[rel="canonical"][href*="/weekly/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a:focus-visible,
+html:has(link[rel="canonical"][href*="/blog/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a:hover,
+html:has(link[rel="canonical"][href*="/blog/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a:focus,
+html:has(link[rel="canonical"][href*="/blog/"]) .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) a:focus-visible {
   color: inherit;
   text-decoration: none;
   outline: none;
@@ -209,6 +318,12 @@ html[data-theme="light"] #starlight__sidebar a {
 html[data-theme="light"] .sidebar-content a[aria-current="page"],
 html[data-theme="light"] #starlight__sidebar a[aria-current="page"] {
   color: var(--moyu-ink);
+}
+
+/* 左侧菜单字重、字号：与 .sidebar-content 一致（覆盖 Starlight .large / 嵌套 a 分级） */
+#starlight__sidebar .sidebar-content :where(a, .large) {
+  font-weight: normal;
+  font-size: inherit;
 }
 
 /* 右侧目录等 */

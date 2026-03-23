@@ -2,6 +2,7 @@
 weeklyLabel: 2026 · 第 1 期
 title: 第 1 期：Claude Code：架构、治理与工程实践
 description: Agent 架构里几块最影响工程效果的内容，包括控制流、上下文工程、工具设计、记忆、多 Agent 组织、评测、追踪和安全，最后再用 OpenClaw 的实现把这些设计原则串起来看一遍。
+publishedAt: 2026-03-13
 feedCover: weekly/weekly-01-01.jpeg
 ---
 
