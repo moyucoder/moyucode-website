@@ -438,3 +438,39 @@ figure.expressive-code {
     max-width: none;
   }
 }
+
+/*
+ * 日刊 / 博客：侧栏与 TOC 拖拽条（见 panel-resize.ts）
+ */
+html:has(link[rel="canonical"][href*="/daily/"]) .moyu-panel-resize-handle,
+html:has(link[rel="canonical"][href*="/blog/"]) .moyu-panel-resize-handle {
+  touch-action: none;
+  z-index: 15;
+  box-sizing: border-box;
+}
+
+.moyu-panel-resize-handle--sidebar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 10px;
+  margin-inline-end: -5px;
+  cursor: col-resize;
+  background: transparent;
+}
+
+.moyu-panel-resize-handle--toc {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 10px;
+  margin-inline-start: -5px;
+  cursor: col-resize;
+  background: transparent;
+}
+
+.moyu-panel-resize-handle:hover,
+.moyu-panel-resize-handle:focus-visible {
+  background: color-mix(in oklab, var(--sl-color-accent, #1a9fb7) 22%, transparent);
+  outline: none;
+}

@@ -1,5 +1,5 @@
 diff --git a/node_modules/@astrojs/starlight/utils/navigation.ts b/node_modules/@astrojs/starlight/utils/navigation.ts
-index 2870d61..456c2e3 100644
+index 2870d61..b641eb5 100644
 --- a/node_modules/@astrojs/starlight/utils/navigation.ts
 +++ b/node_modules/@astrojs/starlight/utils/navigation.ts
 @@ -267,11 +267,55 @@ function treeify(routes: Route[], locale: string | undefined, baseDir: string):
@@ -59,7 +59,7 @@ index 2870d61..456c2e3 100644
  		route.entry.data.sidebar.badge,
  		route.entry.data.sidebar.attrs
  	);
-@@ -288,18 +332,44 @@ function getOrder(routeOrDir: Route | Dir): number {
+@@ -288,18 +332,54 @@ function getOrder(routeOrDir: Route | Dir): number {
  			(routeOrDir.entry.data.sidebar.order ?? Number.MAX_VALUE);
  }
  
@@ -94,12 +94,22 @@ index 2870d61..456c2e3 100644
  	});
  }
  
-+/** moyu: 子目录索引页 frontmatter `sidebarGroupLabel` 覆盖侧栏分组标题（目录名用英文，展示中文） */
++/**
++ * moyu: 侧栏分组标题 — 优先 `index.md` 的 `sidebarGroupLabel`；
++ * 无 index 时从子页面继承（如仅 `network/curl.md` 时写在 curl 上即可）。
++ */
 +function sidebarGroupLabelFromDir(dir: Dir, dirName: string): string {
 +	const indexEntry = dir['index'];
 +	if (indexEntry && !isDir(indexEntry)) {
 +		const raw = indexEntry.entry.data as { sidebarGroupLabel?: string };
 +		const gl = raw.sidebarGroupLabel;
++		if (typeof gl === 'string' && gl.trim() !== '') return gl.trim();
++	}
++	const childKeys = Object.keys(dir).sort();
++	for (const key of childKeys) {
++		const v = dir[key as keyof typeof dir];
++		if (key === 'index' || isDir(v)) continue;
++		const gl = (v as Route).entry.data.sidebarGroupLabel;
 +		if (typeof gl === 'string' && gl.trim() !== '') return gl.trim();
 +	}
 +	return dirName;
@@ -108,7 +118,7 @@ index 2870d61..456c2e3 100644
  /** Create a group entry for a given content collection directory. */
  function groupFromDir(
  	dir: Dir,
-@@ -309,12 +379,12 @@ function groupFromDir(
+@@ -309,12 +389,12 @@ function groupFromDir(
  	locale: string | undefined,
  	collapsed: boolean
  ): SidebarGroup {
@@ -123,7 +133,7 @@ index 2870d61..456c2e3 100644
  		entries,
  		collapsed,
  		badge: undefined,
-@@ -342,7 +412,7 @@ function sidebarFromDir(
+@@ -342,7 +422,7 @@ function sidebarFromDir(
  	locale: string | undefined,
  	collapsed: boolean
  ) {
@@ -132,7 +142,7 @@ index 2870d61..456c2e3 100644
  		dirToItem(dirOrRoute, key, key, currentPathname, locale, collapsed)
  	);
  }
-@@ -356,14 +426,57 @@ function sidebarFromDir(
+@@ -356,14 +436,57 @@ function sidebarFromDir(
   *
   * @see getSidebarFromIntermediateSidebar
   */

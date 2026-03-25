@@ -13,6 +13,18 @@ export default defineConfig({
   ...(basePath ? { base: basePath } : {}),
   output: "static",
   trailingSlash: "always",
+  /**
+   * 大尺寸 / 多帧 GIF 等会触发 Sharp 默认 `limitInputPixels`，导致构建报错且正文图不生成。
+   * 站点内容为自建仓库，可关闭像素上限；若担心内存可改为极大数值而非 `false`。
+   */
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+      config: {
+        limitInputPixels: false,
+      },
+    },
+  },
   devToolbar: {
     enabled: false,
   },
@@ -79,6 +91,11 @@ export default defineConfig({
           label: "从 0 开始学 Agent",
           collapsed: false,
           autogenerate: { directory: "blog/from-zero-agent" },
+        },
+        {
+          label: "工具",
+          collapsed: true,
+          autogenerate: { directory: "blog/tool" },
         },
         {
           label: "云原生",
