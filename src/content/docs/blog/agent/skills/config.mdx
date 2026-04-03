@@ -1,0 +1,25 @@
+---
+title: SKILL 目录
+description: SKILL 目录
+createAt: 2026-03-18
+screen: images/skill.png
+---
+
+不同工具对于 skills 在项目级和全局级的配置方式可能有所不同。
+
+## 目录清单
+
+| 工具 | 项目级目录（Project Scope） | 用户级（全局）目录（Global Scope） |
+| --- | --- | --- |
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| OpenCode | `.opencode/skills/` | `~/.config/opencode/skills/` |
+| Gemini CLI | `.gemini/skills/` | `~/.gemini/skills/` |
+| [Cursor](https://cursor.com/cn/docs/skills#-2) | `.cursor/skills/`、`.agent/skills/` | `~/.cursor/skills/` |
+| GitHub Copilot | `.github/skills/` | `~/.copilot/skills/` |
+| Google Antigravity | `.agent/skills/` | `~/.gemini/antigravity/skills/` |
+| OpenAI Codex | `.codex/skills/` | `~/.codex/skills/` |
+| Windsurf | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
+
+## Cursor
+
+为了兼容性，Cursor 还会从 Claude 和 Codex 目录加载技能：`.claude/skills/`、`.codex/skills/`、`~/.claude/skills/` 和 `~/.codex/skills/`。

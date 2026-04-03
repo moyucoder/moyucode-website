@@ -1,12 +1,10 @@
 ---
 title: cURL
 description: cURL
-sidebar:
-  order: 2
 homeFeed: true
-publishedAt: 2026-02-01
+createAt: 2026-02-01
 sidebarGroupLabel: 网络调试
-feedCover: images/curl.png
+screen: images/curl.png
 ---
 
 cURL 是一个在终端发送网络请求的工具。

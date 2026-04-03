@@ -1,4 +1,4 @@
-/* 首页：双栏卡片、与 Starlight 顶栏/底栏衔接 */
+/* 首页：日刊/博客两栏；每栏内卡片网格（默认每行 3 张）、与 Starlight 顶栏/底栏衔接 */
 .home-main-frame {
   flex: 1;
   display: flex;
@@ -16,14 +16,16 @@
 }
 
 .home-columns {
+  /* 与 .home-card-grid 的 gap 同源，左右留白与卡片间距一致 */
+  --home-card-gap: clamp(0.65rem, 1.8vw, 1rem);
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(1rem, 3vw, 2rem);
-  max-width: min(90rem, 100%);
+  gap: var(--home-card-gap);
+  max-width: 100%;
   width: 100%;
-  margin-inline: auto;
-  padding: clamp(1rem, 2.5vw, 2rem) var(--sl-nav-pad-x);
+  margin-inline: 0;
+  padding: clamp(1rem, 2.5vw, 2rem) var(--home-card-gap);
   align-content: start;
   box-sizing: border-box;
 }
@@ -42,23 +44,29 @@
 
 .home-col-title {
   margin: 0 0 1rem;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 56px;
+  font-weight: 400;
+  letter-spacing: 1em;
   text-align: center;
   color: #bbb;
 }
 
 .home-card-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(0.65rem, 1.8vw, 1rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--home-card-gap, clamp(0.65rem, 1.8vw, 1rem));
   width: 100%;
+}
+
+@media (max-width: 52rem) {
+  .home-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 36rem) {
   .home-card-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -91,7 +99,7 @@ html[data-theme="light"] .home-card {
   overflow: hidden;
 }
 
-/* 博客等未传 feedCover：仅灰底占位 */
+/* 博客等未传 screen：仅灰底占位 */
 .home-card-image--empty {
   background: var(--sl-color-gray-5);
 }

@@ -1,8 +1,6 @@
 ---
 title: 摸鱼编程日刊
 description: 工具、阅读与开源动态，每日一记。
-sidebar:
-  order: 0
 ---
 
 这里记录每日值得分享的摸鱼内容。

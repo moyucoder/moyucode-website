@@ -1,16 +1,64 @@
+diff --git a/node_modules/@astrojs/starlight/components/Page.astro b/node_modules/@astrojs/starlight/components/Page.astro
+index 7edf421..9585886 100644
+--- a/node_modules/@astrojs/starlight/components/Page.astro
++++ b/node_modules/@astrojs/starlight/components/Page.astro
+@@ -30,9 +30,15 @@ import ThemeProvider from 'virtual:starlight/components/ThemeProvider';
+ import TwoColumnContent from 'virtual:starlight/components/TwoColumnContent';
+ 
+ import printHref from '../style/print.css?url&no-inline';
++import { PAGE_TITLE_ID } from '../constants';
+ 
+ const { starlightRoute } = Astro.locals;
+ 
++/** moyu: 日刊单篇（daily/YYYY/… 且非 index）不渲染标题栏 ContentPanel，避免多余 DOM；正文区补 skip 锚点 */
++const isDailyIssuePage =
++	/^daily\/\d{4}\//u.test(starlightRoute.entry.id) &&
++	!starlightRoute.entry.id.endsWith('/index');
++
+ const pagefindEnabled =
+ 	starlightRoute.entry.slug !== '404' &&
+ 	!starlightRoute.entry.slug.endsWith('/404') &&
+@@ -105,12 +111,22 @@ if (pagefindEnabled) mainDataAttributes['data-pagefind-body'] = '';
+ 							</ContentPanel>
+ 						) : (
+ 							<>
++								{isDailyIssuePage ? (
++									(starlightRoute.entry.data.draft || starlightRoute.isFallback) && (
++										<ContentPanel>
++											{starlightRoute.entry.data.draft && <DraftContentNotice />}
++											{starlightRoute.isFallback && <FallbackContentNotice />}
++										</ContentPanel>
++									)
++								) : (
++									<ContentPanel>
++										<PageTitle />
++										{starlightRoute.entry.data.draft && <DraftContentNotice />}
++										{starlightRoute.isFallback && <FallbackContentNotice />}
++									</ContentPanel>
++								)}
+ 								<ContentPanel>
+-									<PageTitle />
+-									{starlightRoute.entry.data.draft && <DraftContentNotice />}
+-									{starlightRoute.isFallback && <FallbackContentNotice />}
+-								</ContentPanel>
+-								<ContentPanel>
++									{isDailyIssuePage && <span id={PAGE_TITLE_ID} />}
+ 									<MarkdownContent>
+ 										<slot />
+ 									</MarkdownContent>
 diff --git a/node_modules/@astrojs/starlight/utils/navigation.ts b/node_modules/@astrojs/starlight/utils/navigation.ts
-index 2870d61..b641eb5 100644
+index 2870d61..8aed10c 100644
 --- a/node_modules/@astrojs/starlight/utils/navigation.ts
 +++ b/node_modules/@astrojs/starlight/utils/navigation.ts
-@@ -267,11 +267,55 @@ function treeify(routes: Route[], locale: string | undefined, baseDir: string):
+@@ -267,11 +267,62 @@ function treeify(routes: Route[], locale: string | undefined, baseDir: string):
  	return treeRoot;
  }
  
-+/** moyu: 日刊侧栏链接文案 — `publishedAt` →「M月d日：」+ title；显式 `sidebar.label` 优先 */
++/** moyu: 日刊侧栏链接文案 — `createAt` →「M月d日：」+ title；显式 `sidebar.label` 优先 */
 +function moyuDailySidebarLinkLabel(route: Route): string {
 +	type FM = {
 +		title?: string;
-+		publishedAt?: Date | string;
++		createAt?: Date | string;
 +		sidebar?: { label?: string };
 +	};
 +	const data = route.entry.data as FM;
@@ -22,7 +70,7 @@ index 2870d61..b641eb5 100644
 +		return (data.title ?? '') as string;
 +	}
 +
-+	const p = data.publishedAt;
++	const p = data.createAt;
 +	let iso = '';
 +	if (p instanceof Date && !Number.isNaN(p.getTime())) {
 +		iso = p.toISOString().slice(0, 10);
@@ -39,14 +87,21 @@ index 2870d61..b641eb5 100644
 +	return title ? `${md}：${title}` : md;
 +}
 +
-+/** moyu: 日刊 `daily/YYYY/` 侧栏按发布时间排序 */
++/** moyu: 日刊 `daily/YYYY/` 侧栏按 `createAt` 排序；无日期排最后 */
 +function routePublishedAtMs(route: Route): number | null {
-+	const p = route.entry.data.publishedAt;
++	const p = route.entry.data.createAt;
 +	if (p instanceof Date && !Number.isNaN(p.getTime())) return p.getTime();
 +	if (typeof p === 'string' && p.trim()) {
 +		const t = new Date(p.trim()).getTime();
 +		if (!Number.isNaN(t)) return t;
 +	}
++	return null;
++}
++
++/** moyu: 目录节点若含 `index` 页，取其 `createAt`（用于 blog 侧栏分组排序） */
++function dirIndexPublishedAtMs(d: Dir): number | null {
++	const idx = d['index'];
++	if (idx && !isDir(idx)) return routePublishedAtMs(idx);
 +	return null;
 +}
 +
@@ -59,7 +114,7 @@ index 2870d61..b641eb5 100644
  		route.entry.data.sidebar.badge,
  		route.entry.data.sidebar.attrs
  	);
-@@ -288,18 +332,54 @@ function getOrder(routeOrDir: Route | Dir): number {
+@@ -288,18 +339,75 @@ function getOrder(routeOrDir: Route | Dir): number {
  			(routeOrDir.entry.data.sidebar.order ?? Number.MAX_VALUE);
  }
  
@@ -67,7 +122,8 @@ index 2870d61..b641eb5 100644
 -function sortDirEntries(dir: [string, Dir | Route][]): [string, Dir | Route][] {
 +/**
 + * Sort a directory’s entries by user-specified order or alphabetically if no order specified.
-+ * moyu: `daily/YYYY` 下仅含文章页时，按 `publishedAt` 倒序，缺省或相同时按文件名（slug 末段）倒序。
++ * moyu: `daily/YYYY` 下仅含文章页时，按 `createAt` 倒序，无日期排最后，缺省或相同时按文件名（slug 末段）倒序。
++ * moyu: `blog` 及子目录下按 `createAt` 正序（同级均为叶子时比日期；均为子目录时比各目录 index 的日期；无日期排最后）。
 + */
 +function sortDirEntries(
 +	dir: [string, Dir | Route][],
@@ -75,6 +131,7 @@ index 2870d61..b641eb5 100644
 +): [string, Dir | Route][] {
  	const collator = new Intl.Collator(localeToLang(undefined));
 +	const isDailyYearDir = /^daily\/\d{4}$/.test(parentDirSlug);
++	const isBlogScope = parentDirSlug === 'blog' || parentDirSlug.startsWith('blog/');
 +
  	return dir.sort(([_keyA, a], [_keyB, b]) => {
 +		if (isDailyYearDir && !isDir(a) && !isDir(b)) {
@@ -84,6 +141,25 @@ index 2870d61..b641eb5 100644
 +			if (msA !== null && msB === null) return -1;
 +			if (msA === null && msB !== null) return 1;
 +			return _keyB.localeCompare(_keyA, undefined, { numeric: true });
++		}
++
++		if (isBlogScope) {
++			if (!isDir(a) && !isDir(b)) {
++				const msA = routePublishedAtMs(a);
++				const msB = routePublishedAtMs(b);
++				if (msA !== null && msB !== null && msA !== msB) return msA - msB;
++				if (msA !== null && msB === null) return -1;
++				if (msA === null && msB !== null) return 1;
++				return collator.compare(a.slug, b.slug);
++			}
++			if (isDir(a) && isDir(b)) {
++				const msA = dirIndexPublishedAtMs(a);
++				const msB = dirIndexPublishedAtMs(b);
++				if (msA !== null && msB !== null && msA !== msB) return msA - msB;
++				if (msA !== null && msB === null) return -1;
++				if (msA === null && msB !== null) return 1;
++				return collator.compare(a[SlugKey], b[SlugKey]);
++			}
 +		}
 +
  		const [aOrder, bOrder] = [getOrder(a), getOrder(b)];
@@ -118,7 +194,7 @@ index 2870d61..b641eb5 100644
  /** Create a group entry for a given content collection directory. */
  function groupFromDir(
  	dir: Dir,
-@@ -309,12 +389,12 @@ function groupFromDir(
+@@ -309,12 +417,12 @@ function groupFromDir(
  	locale: string | undefined,
  	collapsed: boolean
  ): SidebarGroup {
@@ -133,7 +209,7 @@ index 2870d61..b641eb5 100644
  		entries,
  		collapsed,
  		badge: undefined,
-@@ -342,7 +422,7 @@ function sidebarFromDir(
+@@ -342,7 +450,7 @@ function sidebarFromDir(
  	locale: string | undefined,
  	collapsed: boolean
  ) {
@@ -142,7 +218,7 @@ index 2870d61..b641eb5 100644
  		dirToItem(dirOrRoute, key, key, currentPathname, locale, collapsed)
  	);
  }
-@@ -356,14 +436,57 @@ function sidebarFromDir(
+@@ -356,14 +464,57 @@ function sidebarFromDir(
   *
   * @see getSidebarFromIntermediateSidebar
   */

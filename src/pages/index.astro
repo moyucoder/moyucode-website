@@ -7,8 +7,8 @@ import {
   formatDate,
   hrefForDocId,
   isoDate,
-  mtimeMs,
-  publishedOrMtimeMs,
+  displayTimeMs,
+  compareCreateAtDescNullsLast,
   dailyCardMenuTitle,
 } from "../lib/homeLists.ts"
 
@@ -26,7 +26,7 @@ type CardItem = {
 }
 
 type CardItemOptions = {
-  /** 覆盖卡片标题（如日刊为 `publishedAt` + `title`） */
+  /** 覆盖卡片标题（如日刊为 `createAt` + `title`） */
   title?: (e: CollectionEntry<"docs">) => string
   /** 为 true 时不展示卡片上的日期行（标题已含日期时避免重复） */
   hideDate?: boolean
@@ -35,7 +35,7 @@ type CardItemOptions = {
 function toCardItems(
   entries: CollectionEntry<"docs">[],
   column: FeedColumn,
-  timeMs: (e: CollectionEntry<"docs">) => number = (e) => mtimeMs(e.id),
+  timeMs: (e: CollectionEntry<"docs">) => number = (e) => displayTimeMs(e),
   max = 12,
   opts?: CardItemOptions,
 ): CardItem[] {
@@ -48,7 +48,7 @@ function toCardItems(
       dateLabel: hideDate ? "" : formatDate(t),
       dateIso: hideDate ? "" : isoDate(t),
       description: (e.data.description ?? "") as string,
-      feed: resolveFeedVisual(e.data.feedCover, column, e.id),
+      feed: resolveFeedVisual(e.data.screen ?? undefined, column, e.id),
     }
   })
 }
@@ -56,20 +56,20 @@ function toCardItems(
 const dailyRaw = allDocs.filter(
   (e) => /^daily\/\d{4}\//u.test(e.id) && e.id !== "daily/index" && !e.id.endsWith("/index"),
 )
-dailyRaw.sort((a, b) => publishedOrMtimeMs(b) - publishedOrMtimeMs(a))
-const dailyList = toCardItems(dailyRaw, "daily", publishedOrMtimeMs, 12, {
+dailyRaw.sort(compareCreateAtDescNullsLast)
+const dailyList = toCardItems(dailyRaw, "daily", displayTimeMs, 12, {
   title: (e) => dailyCardMenuTitle(e.id, e.data),
   hideDate: true,
 })
 
 const blogCandidates = allDocs.filter((e) => e.id.startsWith("blog/") && e.id !== "blog/index")
-const byPublishedDesc = (a: CollectionEntry<"docs">, b: CollectionEntry<"docs">) =>
-  publishedOrMtimeMs(b) - publishedOrMtimeMs(a)
-const blogFeatured = blogCandidates.filter((e) => e.data.homeFeed === true).sort(byPublishedDesc)
-const blogRest = blogCandidates.filter((e) => e.data.homeFeed !== true).sort(byPublishedDesc)
-/** 先 homeFeed，再按 publishedAt（无则 mtime）倒序补足至 20 条 */
+const blogFeatured = blogCandidates.filter((e) => e.data.homeFeed === true).sort(compareCreateAtDescNullsLast)
+const blogRest = blogCandidates.filter((e) => e.data.homeFeed !== true).sort(compareCreateAtDescNullsLast)
+/** 先 homeFeed，再按 createAt 倒序补足至 20 条（无 createAt 排最后） */
 const blogRaw = [...blogFeatured, ...blogRest].slice(0, BLOG_HOME_FEED_MAX)
-const blogList = toCardItems(blogRaw, "blog", publishedOrMtimeMs, BLOG_HOME_FEED_MAX)
+const blogList = toCardItems(blogRaw, "blog", displayTimeMs, BLOG_HOME_FEED_MAX, {
+  hideDate: true,
+})
 
 const base = import.meta.env.BASE_URL
 const feedColumns = [

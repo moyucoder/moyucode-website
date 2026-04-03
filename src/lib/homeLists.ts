@@ -15,11 +15,11 @@ export function mtimeMs(id: string): number {
   }
 }
 
-type WithPublished = { id: string; data: { publishedAt?: Date | string } }
+type WithCreateAt = { id: string; data: { createAt?: Date | string } }
 
-/** 解析 frontmatter `publishedAt`（Date 或 YAML 日期字符串） */
-function publishedAtMs(entry: WithPublished): number | null {
-  const p = entry.data.publishedAt
+/** 解析 frontmatter `createAt`（Date 或 YAML 日期字符串） */
+function createAtMs(entry: WithCreateAt): number | null {
+  const p = entry.data.createAt
   if (p instanceof Date && !Number.isNaN(p.getTime())) return p.getTime()
   if (typeof p === "string" && p.trim()) {
     const t = new Date(p).getTime()
@@ -28,9 +28,23 @@ function publishedAtMs(entry: WithPublished): number | null {
   return null
 }
 
-/** 首页展示/排序时间：优先 `publishedAt`，否则回退文件 mtime */
-export function publishedOrMtimeMs(entry: WithPublished): number {
-  return publishedAtMs(entry) ?? mtimeMs(entry.id)
+/** 首页卡片等展示用时间：有 `createAt` 用其时间，否则回退文件 mtime（仅展示，不参与「无日期排最后」的排序） */
+export function displayTimeMs(entry: WithCreateAt): number {
+  return createAtMs(entry) ?? mtimeMs(entry.id)
+}
+
+/** 侧栏/首页：按 `createAt` 倒序，无日期排最后；同日再比 id */
+export function compareCreateAtDescNullsLast(
+  a: WithCreateAt,
+  b: WithCreateAt,
+): number {
+  const ma = createAtMs(a)
+  const mb = createAtMs(b)
+  if (ma === null && mb === null) return b.id.localeCompare(a.id)
+  if (ma === null) return 1
+  if (mb === null) return -1
+  if (mb !== ma) return mb - ma
+  return b.id.localeCompare(a.id)
 }
 
 /** `daily/2026/…` 下的日刊正文（排除各级 index） */
@@ -38,15 +52,15 @@ export function isDailyIssueDocId(id: string): boolean {
   return /^daily\/\d{4}\//u.test(id) && !id.endsWith("/index")
 }
 
-/** `publishedAt` 对应的 `YYYY-MM-DD`，无则空串 */
-export function publishedAtIsoDate(entry: WithPublished): string {
-  const ms = publishedAtMs(entry)
+/** `createAt` 对应的 `YYYY-MM-DD`，无则空串 */
+export function createAtIsoDate(entry: WithCreateAt): string {
+  const ms = createAtMs(entry)
   return ms === null ? "" : isoDate(ms)
 }
 
-/** `publishedAt` → 「3月20日」，无则空串 */
-export function publishedAtZhMonthDay(entry: WithPublished): string {
-  const iso = publishedAtIsoDate(entry)
+/** `createAt` → 「3月20日」，无则空串 */
+export function createAtZhMonthDay(entry: WithCreateAt): string {
+  const iso = createAtIsoDate(entry)
   if (!iso) return ""
   const [, m, d] = iso.split("-")
   return `${parseInt(m, 10)}月${parseInt(d, 10)}日`
@@ -55,7 +69,7 @@ export function publishedAtZhMonthDay(entry: WithPublished): string {
 /** 日刊页 H1：与同页侧栏 `moyuDailySidebarLinkLabel` 一致，去掉前缀「M月d日」及紧随的中文冒号（若有）。 */
 export function dailyHeadingTitle(
   id: string,
-  data: { title?: string; publishedAt?: Date | string; sidebar?: { label?: string } },
+  data: { title?: string; createAt?: Date | string; sidebar?: { label?: string } },
 ): string {
   if (!isDailyIssueDocId(id)) return (data.title ?? "") as string
 
@@ -71,9 +85,9 @@ export function dailyHeadingTitle(
 }
 
 /** 首页日刊卡片：`M月d日` + 中文冒号 + `title`（侧栏同逻辑见 Starlight navigation patch） */
-export function dailyCardMenuTitle(id: string, data: { title?: string; publishedAt?: Date | string }): string {
+export function dailyCardMenuTitle(id: string, data: { title?: string; createAt?: Date | string }): string {
   if (!isDailyIssueDocId(id)) return (data.title ?? "") as string
-  const md = publishedAtZhMonthDay({ id, data })
+  const md = createAtZhMonthDay({ id, data })
   const t = (data.title ?? "") as string
   return md ? `${md}：${t}` : t
 }

@@ -61,7 +61,7 @@ function docParentDir(docId: string): string {
 }
 
 /**
- * `feedCover: images/a.jpg` 相对「该篇所在文件夹」：
+ * `screen: images/a.jpg` 相对「该篇所在文件夹」：
  * - 日刊单文件：`daily/2026/03-24` → `daily/2026/images/…`
  * - 博客目录索引：`blog/cloud-native` → `blog/cloud-native/images/…`（不能用父级 `blog`）
  * 故先试 `docId/images/…`，再试 `docParentDir(docId)/images/…`。
@@ -91,7 +91,7 @@ function resolveLocalPath(pathFromAssets: string): FeedVisual | null {
 }
 
 /**
- * 解析单条 `feedCover` 或默认图字符串：`https?://` 为外链；
+ * 解析单条 `screen` 或默认图字符串：`https?://` 为外链；
  * `images/…`（相对该篇所在目录）→ `src/content/docs/<父目录>/images/…`；
  * 其余按 `src/assets/` 下路径。
  */
@@ -124,13 +124,13 @@ function resolveFeedCoverString(
   return { kind: "svg", src: dailySvgFallback }
 }
 
-/** 首页卡片：frontmatter `feedCover` 优先；博客无则用灰块；日刊无则用 `config.mjs` → `feedDefaults.daily` */
+/** 首页卡片：frontmatter `screen` 优先；博客无则用灰块；日刊无则用 `config.mjs` → `feedDefaults.daily` */
 export function resolveFeedVisual(
-  feedCover: string | undefined,
+  screen: string | undefined,
   column: FeedColumn,
   docId?: string,
 ): FeedVisual {
-  const primary = feedCover?.trim() ?? ""
+  const primary = screen?.trim() ?? ""
   if (column === "blog") {
     if (!primary) return { kind: "none" }
     return resolveFeedCoverString(primary, "blog", docId)

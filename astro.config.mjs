@@ -92,7 +92,12 @@ export default defineConfig({
         {
           label: "从 0 开始学 Agent",
           collapsed: false,
-          autogenerate: { directory: "blog/from-zero-agent" },
+          autogenerate: { directory: "blog/agent" },
+        },
+        {
+          label: "前端",
+          collapsed: false,
+          autogenerate: { directory: "blog/frontend" },
         },
         {
           label: "工具",

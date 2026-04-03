@@ -1,0 +1,63 @@
+---
+title: SKILL
+description: SKILL 知识简介
+sidebarGroupLabel: SKILL
+homeFeed: true
+createAt: 2026-03-18
+screen: images/skill.png
+---
+
+import zhSkillGuide from './images/The-Complete-Guide-to-Building-Skill-for-Claude.no_watermark.zh-CN.pdf';
+import enSkillGuide from './images/The-Complete-Guide-to-Building-Skill-for-Claude.pdf';
+
+Skill，顾名思义就是技能包。它是教大模型按固定流程去做事的操作说明书，可以像函数一样反复调用。
+
+## SKILL 结构
+
+- SKILL.md，<span style="color: #ff0000;">必填</span>，技能说明书，描述技能的用途、输入、输出等。具体就是包含 YAML 前置元数据的 Markdonw 指令。
+- scripts/，可选，可执行代码（python、javascript、shell等）。
+- references/，可选，按需加载的文档。
+- assets/，可选，疏忽中使用的模版、字体、图标。
+
+## SKILL 设计原则
+
+### 渐进式披露原则
+
+简单来说就是三级系统，这种设计保持专业专长同时，减少了 token 使用。
+
+- 第一级：**YAML 前置元数据**。失踪加载到 Claude 的系统提示中。仅需提供足够信息，让 Claude 知道什么时间用什么技能，无需将所有内容都加载到上下文中。
+- 第二级：**SKILL.md 正文**。当 Claude 认为该技能与当前任务相关时加载。包含完整的指令和指导。
+- 第三级：**链接文件**。技能目录中捆绑的附加文件，Claude 可以根据需要选择性地导航和发现。
+
+### 可组合型
+
+Claude 可以同时加载多个技能。所以好的技能是可以和其他技能协作使用，而不是假设它是唯一可用的能力。
+
+### 可移植性
+
+技能在 Claude.ai、Claude Code 和 API 中完全一致地工作。
+
+### MCP 和 Skill
+
+| MCP | Skill |
+| --- | --- |
+| 负责连接，负责提供厨房环境（工具、设备） | 负责怎么做，负责创造食物的分布指令 |
+| 将 Claude 连接到您的服务（Notion、Linear等）| 教导 Claude 如何使用您的服务 |
+| 提供实时数据和工具调用 | 捕获工作流程和最佳实践 |
+| Claude 能做什么 | Claude 应该怎么做 |
+
+## 如何开发 SKILL？
+
+### 规划设计
+
+在编写任何代码之前，先确定您的技能应支持的 2~3 个具体用例，确保它有明确的用途和目标。具体操作问自己：
+
+- 用户想要完成什么？
+- 这需要哪些多步骤工作流？
+- 需要哪些工具（内置还是 MCP）？
+- 应嵌入哪些领域知识或最佳实践？
+
+## 资料
+
+- <a href={zhSkillGuide} target="_blank" rel="noopener noreferrer">Claude 技能构建完全指南（中文 PDF）</a>
+- <a href={enSkillGuide} target="_blank" rel="noopener noreferrer">Claude 技能构建完全指南（英文 PDF）</a>
