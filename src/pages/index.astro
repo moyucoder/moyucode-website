@@ -63,10 +63,9 @@ const dailyList = toCardItems(dailyRaw, "daily", displayTimeMs, 12, {
 })
 
 const blogCandidates = allDocs.filter((e) => e.id.startsWith("blog/") && e.id !== "blog/index")
-const blogFeatured = blogCandidates.filter((e) => e.data.homeFeed === true).sort(compareCreateAtDescNullsLast)
-const blogRest = blogCandidates.filter((e) => e.data.homeFeed !== true).sort(compareCreateAtDescNullsLast)
-/** 先 homeFeed，再按 createAt 倒序补足至 20 条（无 createAt 排最后） */
-const blogRaw = [...blogFeatured, ...blogRest].slice(0, BLOG_HOME_FEED_MAX)
+blogCandidates.sort(compareCreateAtDescNullsLast)
+/** 与日刊一致：按 createAt 倒序，最多 20 条（无 createAt 排最后）；`homeFeed` 仍可在 frontmatter 保留作他用 */
+const blogRaw = blogCandidates.slice(0, BLOG_HOME_FEED_MAX)
 const blogList = toCardItems(blogRaw, "blog", displayTimeMs, BLOG_HOME_FEED_MAX, {
   hideDate: true,
 })

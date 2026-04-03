@@ -1,9 +1,7 @@
 ---
 title: cURL
-description: cURL
-homeFeed: true
 createAt: 2026-02-01
-sidebarGroupLabel: 网络调试
+sidebarTitle: 网络调试
 screen: images/curl.png
 ---
 

@@ -32,15 +32,15 @@ export const collections = {
              */
             /** 空键 `screen:` 在 YAML 里为 `null`，需与 optional 同时允许 null */
             screen: z.string().nullish(),
-            /** 为 `true` 时优先排在首页「博客」栏前部；其余按 `createAt` 倒序补足 */
+            /** 预留字段；首页「博客」栏已与日刊一致按 `createAt` 倒序，不再用此项置顶 */
             homeFeed: z.boolean().optional(),
             /** 创建时间；未设置时在侧栏与首页排序中置于最后 */
             createAt: z.coerce.date().optional(),
             /**
              * 子目录的 `index` 页可设：侧栏折叠分组标题（目录文件夹名用英文 slug，URL 无中文）。
-             * 见 `navigation.ts` patch `sidebarGroupLabelFromDir`。
+             * 见 `navigation.ts` patch `sidebarTitleFromDir`。
              */
-            sidebarGroupLabel: z.string().optional(),
+            sidebarTitle: z.string().optional(),
           }),
         })(context),
       ),

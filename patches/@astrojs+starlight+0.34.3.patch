@@ -47,7 +47,7 @@ index 7edf421..9585886 100644
  										<slot />
  									</MarkdownContent>
 diff --git a/node_modules/@astrojs/starlight/utils/navigation.ts b/node_modules/@astrojs/starlight/utils/navigation.ts
-index 2870d61..8aed10c 100644
+index 2870d61..50b460d 100644
 --- a/node_modules/@astrojs/starlight/utils/navigation.ts
 +++ b/node_modules/@astrojs/starlight/utils/navigation.ts
 @@ -267,11 +267,62 @@ function treeify(routes: Route[], locale: string | undefined, baseDir: string):
@@ -171,21 +171,21 @@ index 2870d61..8aed10c 100644
  }
  
 +/**
-+ * moyu: 侧栏分组标题 — 优先 `index.md` 的 `sidebarGroupLabel`；
++ * moyu: 侧栏分组标题 — 优先 `index.md` 的 `sidebarTitle`；
 + * 无 index 时从子页面继承（如仅 `network/curl.md` 时写在 curl 上即可）。
 + */
-+function sidebarGroupLabelFromDir(dir: Dir, dirName: string): string {
++function sidebarTitleFromDir(dir: Dir, dirName: string): string {
 +	const indexEntry = dir['index'];
 +	if (indexEntry && !isDir(indexEntry)) {
-+		const raw = indexEntry.entry.data as { sidebarGroupLabel?: string };
-+		const gl = raw.sidebarGroupLabel;
++		const raw = indexEntry.entry.data as { sidebarTitle?: string };
++		const gl = raw.sidebarTitle;
 +		if (typeof gl === 'string' && gl.trim() !== '') return gl.trim();
 +	}
 +	const childKeys = Object.keys(dir).sort();
 +	for (const key of childKeys) {
 +		const v = dir[key as keyof typeof dir];
 +		if (key === 'index' || isDir(v)) continue;
-+		const gl = (v as Route).entry.data.sidebarGroupLabel;
++		const gl = (v as Route).entry.data.sidebarTitle;
 +		if (typeof gl === 'string' && gl.trim() !== '') return gl.trim();
 +	}
 +	return dirName;
@@ -205,7 +205,7 @@ index 2870d61..8aed10c 100644
  	return {
  		type: 'group',
 -		label: dirName,
-+		label: sidebarGroupLabelFromDir(dir, dirName),
++		label: sidebarTitleFromDir(dir, dirName),
  		entries,
  		collapsed,
  		badge: undefined,

@@ -27,3 +27,14 @@
 :root[data-theme="light"] .sl-markdown-content a:hover:not(:where(.not-content *)) {
   color: color-mix(in oklab, var(--sl-color-accent) 72%, black);
 }
+
+/* 行内 code 背景：品牌色冲淡（与页面底混合，避免整块饱和色） */
+.sl-markdown-content code:not(:where(.not-content *)) {
+  background-color: color-mix(in oklab, var(--moyu-brand) 22%, var(--sl-color-bg));
+}
+
+/* 代码块内 code 仍用 Starlight 重置，避免继承行内品牌底 */
+.sl-markdown-content pre code:not(:where(.not-content *)) {
+  all: unset;
+  font-family: var(--__sl-font-mono);
+}

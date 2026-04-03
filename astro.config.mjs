@@ -109,6 +109,11 @@ export default defineConfig({
           collapsed: true,
           autogenerate: { directory: "blog/cloud-native" },
         },
+        {
+          label: "思考",
+          collapsed: true,
+          autogenerate: { directory: "blog/thinking" },
+        },
       ],
       sidebarByLocale: {
         daily: [
