@@ -1,0 +1,81 @@
+---
+title: Github CLI
+createAt: 2026-04-08
+screen: images/github-cli.jpg
+---
+
+Github CLI 是一个在终端操作 Github 的工具。
+
+## 1. 安装
+
+以 MacOS 为例，安装命令如下：
+
+```bash
+brew install gh
+```
+
+## 2. 使用
+
+### 2.1 查看哪些命令可使用
+
+```bash
+gh --help
+```
+
+### 2.2 先登录
+
+输入登录命令：
+
+```bash
+gh auth login
+```
+
+选择/确认步骤：
+
+![Github CLI 登录](./images/github-cli-auth-login.jpg)
+
+浏览器确认：
+
+![Github CLI 登录确认](./images/github-cli-auth-login-browser.jpg)
+
+此时终端会生成 one-time-code，拷贝它：
+
+![拷贝 one-time-code](./images/github-cli-auth-login-one-time-code.jpg)
+
+在浏览器中粘贴 one-time-code 后，点击「Continue」按钮：
+
+![粘贴 one-time-code](./images/github-cli-auth-login-browser-continue.jpg)
+
+授权确认：
+
+![Github CLI 授权](./images/github-cli-auth-login-authorize.jpg)
+
+输入密码：  
+
+![Github CLI 输入密码](./images/github-cli-auth-login-password.jpg)
+
+登录成功反馈：
+
+![Github CLI 登录成功](./images/github-cli-auth-login-success2.jpg)
+
+![Github CLI 登录成功](./images/github-cli-auth-login-success.jpg)
+
+## 3. 验证
+
+### 3.1 查看 issue
+
+查看 openclaw 的 issues，命令如下：
+
+```bash
+gh issue list --repo openclaw/openclaw
+```
+
+![Github CLI 验证](./images/github-cli-gh-list-openclaw.jpg)
+
+### 3.2 创建仓库
+
+```bash
+gh repo create moyu --private
+```
+
+这样就创建了一个私有仓库 `moyu`。
