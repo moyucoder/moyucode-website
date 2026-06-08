@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <circle cx="100" cy="100" r="90" fill="#2d3142" />
+  
+  <circle cx="50" cy="50" r="1.5" fill="#ffffff" opacity="0.6" />
+  <circle cx="150" cy="60" r="1" fill="#ffffff" opacity="0.4" />
+  <circle cx="70" cy="140" r="2" fill="#ffffff" opacity="0.5" />
+  <circle cx="130" cy="40" r="1.5" fill="#ffffff" opacity="0.7" />
+
+  <rect x="45" y="120" width="110" height="20" rx="6" fill="#4f5d75" />
+  <rect x="55" y="105" width="90" height="15" rx="4" fill="#bfc0c0" />
+  
+  <rect x="80" y="65" width="40" height="40" rx="8" fill="#bc84ee" />
+  
+  <line x1="90" y1="77" x2="110" y2="77" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+  <line x1="90" y1="85" x2="105" y2="85" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+  <line x1="90" y1="93" x2="110" y2="93" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+
+  <path d="M140,75 L143,80 L148,81 L144,85 L145,90 L140,87 L135,90 L136,85 L132,81 L137,80 Z" fill="#dcfd8b" />
+  <path d="M60,80 L61.5,83 L64.5,83.5 L62,86 L62.5,89 L60,87.5 L57.5,89 L58,86 L55.5,83.5 L58.5,83 Z" fill="#dcfd8b" opacity="0.8" />
+  
+  <ellipse cx="100" cy="165" rx="70" ry="10" fill="#1d202d" />
+</svg>

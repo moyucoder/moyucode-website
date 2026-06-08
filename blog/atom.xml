@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>http://moyucode.cn/blog</id>
+    <title>moyucode Blog</title>
+    <updated>2026-01-02T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="http://moyucode.cn/blog"/>
+    <subtitle>moyucode Blog</subtitle>
+    <icon>http://moyucode.cn/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[学新东西这件事]]></title>
+        <id>http://moyucode.cn/blog/learn</id>
+        <link href="http://moyucode.cn/blog/learn"/>
+        <updated>2026-01-02T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[在信息爆炸的时代，传统的“先系统学习、后实践”往往效率低下。]]></summary>
+        <content type="html"><![CDATA[<p>在信息爆炸的时代，传统的“先系统学习、后实践”往往效率低下。</p>
+<p>我主张采用一种全新的学习策略：<strong>“演示MVP（最小可行性产品） -&gt; 分析功能 -&gt; 按需学习”</strong>。这是一种面向问题、以实战为中心的降维学习法。</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="一-演示mvp快速建立体感">一、 演示MVP：快速建立体感<a href="http://moyucode.cn/blog/learn#%E4%B8%80-%E6%BC%94%E7%A4%BAmvp%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%AB%8B%E4%BD%93%E6%84%9F" class="hash-link" aria-label="一、 演示MVP：快速建立体感的直接链接" title="一、 演示MVP：快速建立体感的直接链接" translate="no">​</a></h2>
+<p>在深入细节前，先制作或演示一个MVP作品。</p>
+<p>MVP不必完美，只需具备核心功能。通过它，我能迅速感知项目的全貌，了解各组件是如何交互的。</p>
+<p>这种“先看见，再探究”的方式，能让我迅速跨过“不知道自己不知道”的迷茫期。</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="二-功能分析寻找技术拼图">二、 功能分析：寻找技术拼图<a href="http://moyucode.cn/blog/learn#%E4%BA%8C-%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90%E5%AF%BB%E6%89%BE%E6%8A%80%E6%9C%AF%E6%8B%BC%E5%9B%BE" class="hash-link" aria-label="二、 功能分析：寻找技术拼图的直接链接" title="二、 功能分析：寻找技术拼图的直接链接" translate="no">​</a></h2>
+<p>演示后，拆解MVP。这不仅仅是看代码，而是分析“为什么这样做”。</p>
+<p>我会观察技术栈的边界，明确核心业务逻辑与周边细节的区别。</p>
+<p>此时，我已经在潜意识里构建了一个技术框架的空白版。</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="三-按需学习带着问题去寻宝">三、 按需学习：带着问题去“寻宝”<a href="http://moyucode.cn/blog/learn#%E4%B8%89-%E6%8C%89%E9%9C%80%E5%AD%A6%E4%B9%A0%E5%B8%A6%E7%9D%80%E9%97%AE%E9%A2%98%E5%8E%BB%E5%AF%BB%E5%AE%9D" class="hash-link" aria-label="三、 按需学习：带着问题去“寻宝”的直接链接" title="三、 按需学习：带着问题去“寻宝”的直接链接" translate="no">​</a></h2>
+<p>最关键的步骤是“按需”。</p>
+<p>我不会为了学习而学习，而是“做什么功能，遇到问题，才学习什么”。</p>
+<p>这就好比靶向治疗，将系统性知识库中最精华的片段，精准应用于当前的功能需求中。</p>
+<p>通过查找文档、分析错误日志，我在解决实际困难的瞬间，完成了知识的内化。</p>
+<p>这种方法的优势在于：<strong>将“被动输入”转变为“主动索取”</strong>。</p>
+<p>它不仅大幅缩短了从理论到实践的时间，更重要的是，由于是在情景中学习，知识点记忆深刻，学习过程也从枯燥转变为充满成就感的“通关升级”。</p>]]></content>
+        <author>
+            <name>云流</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[博客重启]]></title>
+        <id>http://moyucode.cn/blog/see-you-again</id>
+        <link href="http://moyucode.cn/blog/see-you-again"/>
+        <updated>2026-01-01T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[算起来，我写博客已经有很多年了。]]></summary>
+        <content type="html"><![CDATA[<p>算起来，我写博客已经有很多年了。</p>
+<p>中间因为工作忙碌或生活琐碎，断断续续地停下过，又在某些灵感迸发的时刻重新启动过。</p>
+<p>每一次停滞都伴随着一丝遗憾，而每一次重启，都源于内心深处对文字和记录的不灭热爱。</p>
+<p>今年，在AI技术肆虐、短视频横行的洪流中，我决定不再让它流浪，真正好好开始。</p>
+<p>有人问：在这个算法投喂、15秒快餐信息当道的时代，为什么还要写博客？</p>
+<p>因为写博客，是我在信息爆炸中保持清醒的“深度思维体操”。</p>
+<p>AI可以一秒生成万字通顺的废话，短视频可以疯狂收割多巴胺，但它们都无法替代我个人的真实经历、踩过的具体大坑，以及做出MVP（最小可行性产品）时的兴奋感。</p>
+<p>今年，我的博客将成为我实践**“演示MVP -&gt; 发现问题 -&gt; 按需学习”**这一高效学习法的复盘阵地。</p>
+<p>我不打算去追求虚无的流量，也不再逼迫自己完成高强度的更新，而是去建立一种“可持续的记录习惯”。</p>
+<p>只要内容有价值，它就会沉淀为具备长尾效应的个人无形资产。</p>
+<p>在这个注意力被极度蚕食的时代，能有一块属于自己的自留地，安静地梳理思绪，是一件极其奢侈且幸福的事。</p>
+<p>别人在算法里娱乐，我选择在文字里沉淀。</p>]]></content>
+        <author>
+            <name>云流</name>
+        </author>
+    </entry>
+</feed>
